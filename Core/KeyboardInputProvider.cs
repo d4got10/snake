@@ -1,18 +1,50 @@
-﻿namespace Core;
+﻿using System.Collections.Concurrent;
 
-public class KeyboardInputProvider : IInputProvider, IGameSystem
+namespace Core;
+
+public class KeyboardInputProvider : IInputProvider, IGameSystem, IDisposable
 {
     public int MoveDirection { get; private set; }
+
+
+    private ConcurrentQueue<ConsoleKey> _pressedKeys = new();
+    private Thread _keyPressInputThread;
+    private bool _isDisposed;
+
+    public void Init()
+    {
+        _keyPressInputThread = new Thread(SavePressedKeys);
+        _keyPressInputThread.Start();
+    }
     
     public void Tick()
     {
-        if (Console.ReadKey(false).Key == ConsoleKey.D)
-            MoveDirection = 0;
-        else if (Console.ReadKey(false).Key == ConsoleKey.S)
-            MoveDirection = 1;
-        else if (Console.ReadKey(false).Key == ConsoleKey.A)
-            MoveDirection = 2;
-        else if (Console.ReadKey(false).Key == ConsoleKey.W)
-            MoveDirection = 3;
+        while (!_pressedKeys.IsEmpty)
+        {
+            if (_pressedKeys.TryDequeue(out ConsoleKey key))
+            {
+                MoveDirection = key switch
+                {
+                    ConsoleKey.D => 0,
+                    ConsoleKey.S => 1,
+                    ConsoleKey.A => 2,
+                    ConsoleKey.W => 3,
+                    _ => MoveDirection
+                };
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_isDisposed) return;
+        
+        _isDisposed = true;
+    }
+
+    private void SavePressedKeys()
+    {
+        while(!_isDisposed)
+            _pressedKeys.Enqueue(Console.ReadKey(true).Key);
     }
 }

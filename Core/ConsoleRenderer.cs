@@ -9,11 +9,11 @@ public class ConsoleRenderer : IGameRenderer
         _frame = new char[height, width];
     }
     
-    private int _width;
-    private int _height;
-    private char[,] _frame;
+    private readonly int _width;
+    private readonly int _height;
+    private readonly char[,] _frame;
 
-    private Dictionary<int, char> _symbolsMap = new()
+    private readonly Dictionary<int, char> _symbolsMap = new()
     {
         {0, ' '},
         {1, 'S'},
@@ -23,6 +23,7 @@ public class ConsoleRenderer : IGameRenderer
 
     public void Init()
     {
+        Console.CursorVisible = false;
         for (int row = 0; row < _height; row++)
         {
             for (int column = 0; column < _width; column++)
@@ -39,7 +40,8 @@ public class ConsoleRenderer : IGameRenderer
 
     public void Draw()
     {
-        Console.Clear();
+        Console.SetCursorPosition(0, 0);
+        
         for (int row = 0; row < _height; row++)
         {
             for (int column = 0; column < _width; column++)

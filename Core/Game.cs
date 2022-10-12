@@ -2,14 +2,12 @@
 
 public class Game
 {
-    public Game(int width, int height, IGameRenderer renderer)
+    public Game(int width, int height, IGameRenderer renderer, IInputProvider inputProvider)
     {
         _gameGrid = new GameGrid(width, height);
         _renderer = renderer;
-        var inputProvider = new KeyboardInputProvider();
         _gameSystems = new IGameSystem[]
         {
-            inputProvider,
             new SnakeController(_gameGrid, inputProvider)
         };
     }
