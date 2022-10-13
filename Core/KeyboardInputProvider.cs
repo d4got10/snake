@@ -4,16 +4,20 @@ namespace Core;
 
 public class KeyboardInputProvider : IInputProvider, IGameSystem, IDisposable
 {
+    public KeyboardInputProvider()
+    {
+        _keyPressInputThread = new Thread(SavePressedKeys);
+    }
+    
     public int MoveDirection { get; private set; }
 
 
-    private ConcurrentQueue<ConsoleKey> _pressedKeys = new();
-    private Thread _keyPressInputThread;
+    private readonly ConcurrentQueue<ConsoleKey> _pressedKeys = new();
+    private readonly Thread _keyPressInputThread;
     private bool _isDisposed;
 
     public void Init()
     {
-        _keyPressInputThread = new Thread(SavePressedKeys);
         _keyPressInputThread.Start();
     }
     

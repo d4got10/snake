@@ -18,12 +18,24 @@ public class ConsoleRenderer : IGameRenderer
         {0, ' '},
         {1, 'S'},
         {2, 'A'},
-        {3, 'W'}
+        {3, 'W'},
+        {4, 'H'},
+    };
+    
+    private readonly Dictionary<char, ConsoleColor> _colorsMap = new()
+    {
+        {' ', ConsoleColor.Black},
+        {'S', ConsoleColor.DarkGreen},
+        {'A', ConsoleColor.Red},
+        {'W', ConsoleColor.Gray},
+        {'H', ConsoleColor.Green},
     };
 
     public void Init()
     {
+        Console.Clear();
         Console.CursorVisible = false;
+
         for (int row = 0; row < _height; row++)
         {
             for (int column = 0; column < _width; column++)
@@ -41,14 +53,17 @@ public class ConsoleRenderer : IGameRenderer
     public void Draw()
     {
         Console.SetCursorPosition(0, 0);
-        
+
         for (int row = 0; row < _height; row++)
         {
             for (int column = 0; column < _width; column++)
             {
-                Console.Write(_frame[row, column]);
+                Console.BackgroundColor = _colorsMap[_frame[row, column]];
+                Console.Write(_frame[row, column] + " ");
             }
             Console.WriteLine();
         }
+
+        Console.BackgroundColor = ConsoleColor.Black;
     }
 }

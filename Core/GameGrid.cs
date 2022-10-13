@@ -8,7 +8,7 @@ public class GameGrid
     {
         Width = width;
         Height = height;
-        _data = new CellType[Height, Width];
+        _data = new CellType[Width, Height];
     }
     
     public int Width { get; }
@@ -16,10 +16,10 @@ public class GameGrid
 
     private readonly CellType[,] _data;
 
-    public CellType Get(int column, int row) => _data[row, column];
+    public CellType Get(int column, int row) => _data[column, row];
     public void Set(int column, int row, CellType type)
     {
-        _data[row, column] = type;
+        _data[column, row] = type;
         CellChanged?.Invoke(column, row, type);
     }
 }

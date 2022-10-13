@@ -5,5 +5,6 @@ public enum CellType
     Empty,
     Snake,
     Apple,
-    Wall
+    Wall,
+    SnakeHead
 }
