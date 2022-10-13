@@ -26,9 +26,10 @@ while (!game.IsOver)
     game.Tick();
     Console.WriteLine($"Tick number {++tickNumber}");
     Console.WriteLine($"DeltaTime: {stopwatch.ElapsedMilliseconds / 1000f}");
+    Console.WriteLine($"Total Score: {game.Score}");
     stopwatch.Stop();
 }
 
 inputProvider.Dispose();
 Console.WriteLine("GAME OVER!");
-Console.WriteLine($"Total Score: {game.Score}");
+Console.ReadLine();

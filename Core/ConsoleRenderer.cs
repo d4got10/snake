@@ -6,29 +6,19 @@ public class ConsoleRenderer : IGameRenderer
     {
         _width = width;
         _height = height;
-        _frame = new char[height, width];
     }
     
     private readonly int _width;
     private readonly int _height;
-    private readonly char[,] _frame;
+    private readonly Queue<(int, int, int)> _commandQueue = new();
 
-    private readonly Dictionary<int, char> _symbolsMap = new()
+    private readonly Dictionary<int, (char, ConsoleColor)> _pixelDataMap = new()
     {
-        {0, ' '},
-        {1, 'S'},
-        {2, 'A'},
-        {3, 'W'},
-        {4, 'H'},
-    };
-    
-    private readonly Dictionary<char, ConsoleColor> _colorsMap = new()
-    {
-        {' ', ConsoleColor.Black},
-        {'S', ConsoleColor.DarkGreen},
-        {'A', ConsoleColor.Red},
-        {'W', ConsoleColor.Gray},
-        {'H', ConsoleColor.Green},
+        {0, (' ', ConsoleColor.Black)},
+        {1, ('S', ConsoleColor.DarkGreen)},
+        {2, ('A', ConsoleColor.Red)},
+        {3, ('W', ConsoleColor.Gray)},
+        {4, ('H', ConsoleColor.Green)},
     };
 
     public void Init()
@@ -47,23 +37,20 @@ public class ConsoleRenderer : IGameRenderer
 
     public void SetPixel(int column, int row, int data)
     {
-        _frame[row, column] = _symbolsMap[data];
+        _commandQueue.Enqueue((column, row, data));
     }
 
     public void Draw()
     {
-        Console.SetCursorPosition(0, 0);
-
-        for (int row = 0; row < _height; row++)
+        while (_commandQueue.Count > 0)
         {
-            for (int column = 0; column < _width; column++)
-            {
-                Console.BackgroundColor = _colorsMap[_frame[row, column]];
-                Console.Write(_frame[row, column] + " ");
-            }
-            Console.WriteLine();
+            var (column, row, data) = _commandQueue.Dequeue();
+            Console.SetCursorPosition(2 * column, row);
+            Console.BackgroundColor = _pixelDataMap[data].Item2;
+            Console.Write(_pixelDataMap[data].Item1 + " ");
         }
 
+        Console.SetCursorPosition(0, _height);
         Console.BackgroundColor = ConsoleColor.Black;
     }
 }
